@@ -1,0 +1,179 @@
+<div class="row">
+<ul class="nav nav-tabs" role="tablist" id="myTab">
+  <li class="active"><a href="#backlog" role="tab" data-toggle="tab">Backlog</a></li>
+  <li><a href="#archived" role="tab" data-toggle="tab">Archived</a></li>
+</ul>
+<div class="tab-content">
+  <div ng-controller="backlogCrtl" class="tab-pane active" id="backlog">
+  	<div class="row">
+	  	<table  style="width:650px;" align="center" >
+	  		<tr>
+	    		<td style="font-weight:bold;width:50px;"><h4>Filter:</h4></td>
+	        	<td style="">
+	        		<input type="text" maxlength="50" ng-model="search" ng-change="filter()" placeholder="Game Name" class="form-control" />
+	    		</td>
+	   			<td style="">
+	       			<input type="button" ng-click="newGame()"  class="btn btn-primary"  value="New Game"/>
+	    		</td>
+	    		<td>
+	        		<h4>Filtered {{ filtered.length }} of {{ totalItems}} total games</h4>
+	    		</td>
+	    	</tr>
+	    </table>
+	</div>
+	<br/>
+	<div class="row">
+	    <div class="col-md-12" ng-show="filteredItems > 0">
+	        <table class="table table-striped table-bordered" align="center">
+		        <thead>
+			        <tr>
+			        	<th>Game&nbsp;<a ng-click="sort_by('Name');"><i class="glyphicon glyphicon-sort"></i></a></th>
+			        	<th>Quests Progress</th>
+			        	<th>Archive</th>
+			        </tr>
+		        </thead>
+		        <tbody>
+		            <tr ng-repeat="data in filtered = (list | filter:search | orderBy : predicate :reverse) | startFrom:(currentPage-1)*entryLimit | limitTo:entryLimit">
+		                <td style="width:100px;"><a href="#" ng-click="selectGame(data)">{{data.name}}</a></td>
+		                <td style="width:200px;">
+		                	<div class="progress">
+							  <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: {{calculateQuestProgress(data.tasks)}}%;">
+							    <span class="sr-only">60% Complete</span>
+							  </div>
+							</div>
+		                </td>
+		                <td style="width:100px">
+		                	<input style="width:100%;" type="button" class="btn btn-primary" ng-click="archiveGame(data.id)" value="Archive"/>
+		                </td>
+		            </tr>
+		        </tbody>
+	        </table>
+	    </div>
+	    <center>
+		    <div class="col-md-12" ng-show="filteredItems == 0">
+		        <div class="col-md-12">
+		            <h4>No games found</h4>
+		        </div>
+		    </div>
+		    <div class="col-md-12" ng-show="filteredItems > 0">
+		        <div pagination="" page="currentPage" on-select-page="setPage(page)" boundary-links="true" total-items="filteredItems" items-per-page="entryLimit" class="pagination-small" previous-text="&laquo;" next-text="&raquo;"></div>
+		    </div>
+	    </center>
+	    <div class="modal fade" id="backlogModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+		        <h4 class="modal-title" id="backlogModalLabel">Game</h4>
+		      </div>
+		      <div class="ng-scope">
+			      <div id="login-body" class="modal-body">
+				      <div>				      	
+				      	<div class="form-group">
+				      		<label for="inputTxtName">Name:</label>
+				      		<input type="text" maxlength="50" ng-disabled="selectedGame.id != 0" class="form-control" id="inputTxtName" name="gt" placeholder="GameTitle" ng-model="selectedGame.name">
+				      	</div>
+				      	<div class="form-group">
+				      		<label for="inputTxtDescription">Description:</label>
+				      		<textarea maxlength="200"  class="form-control" id="inputTxtGameTitle" name="d" placeholder="Description" ng-model="selectedGame.description"></textarea>
+				      	</div>
+				      	<div class="form-group">
+				      		<label for="inputTxtOrder">Order:</label>
+				      		<input type="text" maxlength="4" class="form-control" id="inputTxtName" name="o" placeholder="Order" ng-model="selectedGame.order">
+				      	</div>
+				      	<div class="form-group" style="text-align:center;">
+				      		<table>
+				      			<tr>
+				      				<td style="text-align:left;font-weight:bold;">New Quest:</td>
+				      				<td>
+				      					<input class="form-control" maxlength="100" type="text" placeholder="Quest Name" ng-model="newTask"/>
+				      				</td>
+				      				<td>
+				      					<input class="btn btn-primary" type="button" value="Save" ng-click="addTask(newTask)"/>
+				      				</td>
+				      			</tr>
+				      		</table>
+				      	</div>
+				      	<div class="form-group">
+				      		<label>Quest List:</label>
+				      		<div style="height:200px;overflow:auto">
+			      				<table align="center">
+			      					<tr ng-repeat="data in selectedGame.tasks">
+			      						<td style="width:115px;">{{data.name}}</td>
+			      						<td style="width:75px;">
+			      							<input type="checkbox" class="form-control" ng-model="data.complete" ng-true-value="1" ng-false-value="0"/>
+			      						</td>
+			      						<td style="width:35px;">
+			      							<input type="button" class="btn btn-primary" ng-click="deleteTask(data)" value="Del"/>
+			      						</td>
+			      					</tr>
+			      				</table>				      			
+				      		</div>
+				      	</div>
+				      	<button type="button" class="btn btn-primary" ng-click="gameSave()">Save</button>
+				      	<button type="button" class="btn btn-default" ng-click="gameCancel()">Cancel</button>
+				      	<br/>
+				      </div>
+			      </div>
+		      </div>
+		      <div class="modal-footer">
+		        Welcome to Backlog
+		      </div>
+		    </div>
+		  </div>
+		</div>
+	</div>
+  </div>
+  <div class="tab-pane" id="archived">
+  <div ng-controller="archivedCrtl" class="tab-pane active" id="players">
+  	<div class="row">
+  		 <table  style="width:650px;" align="center" >
+	  		<tr>
+	    		<td style="font-weight:bold;width:50px;"><h4>Filter:</h4></td>
+	        	<td style="">
+	        		<input type="text" maxlength="50" ng-model="search" ng-change="filter()" placeholder="Game Name" class="form-control" />
+	    		</td>
+	    		<td style="">
+	        		<input type="button"  class="btn btn-primary" ng-click="reload()" value="Reload" />
+	    		</td>
+	    		<td>
+	        		<h4>Filtered {{ filtered.length }} of {{ totalItems}} total games</h4>
+	    		</td>
+	    	</tr>
+	    </table>
+	</div>
+	<br/>
+	<div class="row">
+	    <div class="col-md-12" ng-show="filteredItems > 0">
+	       <table class="table table-striped table-bordered" align="center">
+		        <thead>
+			        <tr>
+			        	<th>Game&nbsp;<a ng-click="sort_by('Name');"><i class="glyphicon glyphicon-sort"></i></a></th>
+			        	<th>DeArchive</th>
+			        </tr>
+		        </thead>
+		        <tbody>
+		            <tr ng-repeat="data in filtered = (list | filter:search | orderBy : predicate :reverse) | startFrom:(currentPage-1)*entryLimit | limitTo:entryLimit">
+		                <td style="width:100px;">{{data.name}}</td>
+		                <td style="width:100px">
+		                	<input style="width:100%;" type="button" class="btn btn-primary" ng-click="deArchiveGame(data.id)" value="DeArchive"/>
+		                </td>
+		            </tr>
+		        </tbody>
+	        </table>
+	    </div>
+	    <center>
+		    <div class="col-md-12" ng-show="filteredItems == 0">
+		        <div class="col-md-12">
+		            <h4>No games found</h4>
+		        </div>
+		    </div>
+		    <div class="col-md-12" ng-show="filteredItems > 0">
+		        <div pagination="" page="currentPage" on-select-page="setPage(page)" boundary-links="true" total-items="filteredItems" items-per-page="entryLimit" class="pagination-small" previous-text="&laquo;" next-text="&raquo;"></div>
+		    </div>
+	    </center>
+	</div>
+  </div>  
+  </div>
+</div>
+</div>

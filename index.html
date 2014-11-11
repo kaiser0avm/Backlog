@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html ng-app="backlog">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>BacklogApp</title>
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/ionicons.min.css" rel="stylesheet" type="text/css">
+	<link href="css/bootstrap-theme.min.css" rel="stylesheet">
+	<link href="css/adminlte.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+	<div class="container" ng-controller="mainCrtl">
+		<nav class="navbar-static-top navbar-inverse navbar-fixed-top" role="navigation">
+		  <div class="container-fluid">
+		    <!-- Brand and toggle get grouped for better mobile display -->
+		    <div class="navbar-header">
+		      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+		        <span class="sr-only">Toggle navigation</span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		      </button>
+		      <a class="navbar-brand" href="#" ng-click="navigation('news')">Backlog</a>
+		    </div>
+	              <ul class="nav navbar-nav navbar-left">
+	              	<li ng-class="{'active': selectedDir == 'news'}">
+	              		<a href="#" ng-click="navigation('news')">News</a>
+	              	</li>
+	              	<li ng-class="{'active': selectedDir == 'backlog'}" class="ng-hide" ng-show="authenticated">
+	              		<a href="#" ng-click="navigation('backlog')">Backlog</a>
+	              	</li>
+	              	<li ng-class="{'active': selectedDir == 'account'}" class="ng-hide" ng-show="authenticated">
+	              		<a href="#" ng-click="navigation('account')">Account</a>
+	              	</li>
+	              </ul>
+              <div class="navbar-right">
+                    <ul class="nav navbar-nav">
+                        <!-- User Account: style can be found in dropdown.less -->
+                        <li class="dropdown user user-menu ng-hide" ng-show="authenticated">
+                            <a href="" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="glyphicon glyphicon-user"></i>
+                                <span><span class="ng-binding"></span> <i class="caret"></i></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <!-- User image -->
+                                <li class="user-header bg-light-blue">
+                                    <img src="img/user.gif" class="img-circle" width="50" height="50"  alt="User Image">
+                                    <p class="ng-binding">
+                                        <small class="ng-binding">Member {{userName}}</small>
+                                    </p>
+                                </li>
+                                <!-- Menu Footer-->
+                                <li class="user-footer">
+                                    <div class="pull-left">
+                                        <a href="#" ng-click="navigation('account')"  ui-sref="account" class="btn btn-default btn-flat">Account</a>
+                                    </div>
+                                    <div class="pull-right">
+                                        <a href="#" ng-click="logout()" class="btn btn-default btn-flat user-logout" >Sign out</a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="user user-menu" ng-hide="authenticated">
+                            <a href="" ui-sref="login" class="modal-toggle" data-toggle="modal" style="collor" data-target="#loginModal">
+                                <i class="glyphicon glyphicon-log-in"></i>
+                                <span class="">Sign In</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+               </div>
+		</nav>
+		<div dynamic="content" style="margin-top:50px;">
+		</div>
+		<div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+		        <h4 class="modal-title" id="loginModalLabel">Login</h4>
+		      </div>
+		      <div class="ng-scope">
+			      <div id="login-body" class="modal-body">
+				      <div>
+				      	
+				      	<div class="form-group">
+				      		<label for="inputTxtUser">User</label>
+				      		<input type="text" maxlength="30"  class="form-control" id="inputTxtUser" name="u" style="text-transform:lowercase;" placeholder="User" ng-model="user">
+				      	</div>
+				      	<div class="form-group">
+				      		<label for="inputPassword">Password</label>
+				      		<input type="password" maxlength="30" name="p" class="form-control" id="inputPassword" placeholder="Password" ng-model="pass">
+				      	</div>
+				      	<button type="button" class="btn btn-primary" ng-click="login(user,pass)">Login</button>
+				      	<button type="button" class="btn btn-default" ng-click="loginCancel()">Cancel</button>
+				      	<br/>
+				      	<a href="#" ng-click="newUser(user,pass)">New User</a>
+				      </div>
+			      </div>
+		      </div>
+		      <div class="modal-footer">
+		        Welcome to Backlog
+		      </div>
+		    </div>
+		  </div>
+		</div>
+		<div id="loading" class="row" style="width:100%;height:100%;opacity:0.5;background-color:black;left:15px;top:0;display:{{loadingDisplay}};position:fixed;z-index:1600;">
+			<center>
+				<img style="margin-top:100px;" alt="loading" src="img/loading.gif"/>
+				<br/>
+				<h3>Loading...</h3>
+			</center>
+		</div>
+	</div>
+	<script src="js/jquery.min.js" type="text/javascript"></script>
+	<script src="js/angular.min.js" type="text/javascript"></script>
+	<script src="js/bootstrap.min.js" type="text/javascript"></script>
+	<script src="js/ui-bootstrap-tpls-0.10.0.min.js" type="text/javascript"></script>
+	<script src="js/backlog.js" type="text/javascript"></script>
+</body>
+</html>

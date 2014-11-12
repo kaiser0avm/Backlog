@@ -97,6 +97,15 @@ try{
 					throw new Exception("Id Task,Complete was not set on this updateTask operation");
 				}
 				break;
+			case "deleteAllTasks":
+				if(isset($request["ig"])){
+					include('app/controllers/TaskController.php');
+					$result = TaskController::deleteAllTasks($request["ig"]);
+				}
+				else{
+					throw new Exception("Id Task was not set on this deleteTask operation");
+				}
+				break;
 			case "deleteTask":
 				if(isset($request["it"])){
 					include('app/controllers/TaskController.php');

@@ -88,6 +88,33 @@ class TaskController{
 		return $result;
 	}
 	
+	public static function deleteAllTasks($idGame){
+		$result = array();
+		$conn = DataBase::connect();
+		try{
+			if(!mysqli_connect_errno()){
+				$id;$name;$descripcion;$order;
+				$stmt = mysqli_prepare($conn, "DELETE FROM tasks WHERE id_game = ?");
+				mysqli_stmt_bind_param($stmt,"i",$idGame);
+				mysqli_stmt_execute($stmt);
+				if($stmt){
+					$result = array("error" => false,"message" => "All Quests deleted Successfully");
+				}
+				else{
+					throw new Exception("Something went wrong with the query");
+				}
+			}
+			else{
+				throw new Exception("Something went wrong with the db connection");
+			}
+		}
+		catch(Exception $e){
+			$result = array("error" => true,"message" => $e->getMessage());
+		}
+		mysqli_close($conn);
+		return $result;
+	}
+	
 	public static function deleteTask($idTask){
 		$result = array();
 		$conn = DataBase::connect();

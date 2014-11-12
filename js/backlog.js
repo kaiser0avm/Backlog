@@ -27,7 +27,7 @@ app.service("messageService",function(){
 			break;
 		}
 		$('body').append(alertMessage);
-		setTimeout(function(){$('#alertMessage').alert('close');},1500);
+		setTimeout(function(){$('.alert').alert('close');},1500);
 	};
 });
 app.directive('dynamic', function ($compile) {
@@ -180,6 +180,7 @@ app.controller('backlogCrtl',function($scope,$http,$timeout,messageService,userS
 		$("#backlogModal").modal('show');
 	}
 	$scope.gameCancel = function(){
+		//$scope.reload();
 		$("#backlogModal").modal('hide');
 	}
 	$scope.archiveGame = function(gameId){
@@ -258,11 +259,27 @@ app.controller('backlogCrtl',function($scope,$http,$timeout,messageService,userS
 			$("#backlogModal").modal('hide');
 		}
 	}
+	$scope.deleteAllTasks = function(gameId){
+		$http.post('routes.php',{"op":"deleteAllTasks","ig":gameId}).success(function(data){
+			if(!data.error){
+				messageService.message(0,data.message);
+				$scope.selectedGame.tasks = [];
+			}
+			else{
+				messageService.message(1,data.message);
+			}
+		});	
+	}
 	$scope.deleteTask = function(task){
 		if(task.id==0){
 			for(var n = 0;n < $scope.selectedGame.tasks.length;n++){
 				if($scope.selectedGame.tasks[n] == task){
 					$scope.selectedGame.tasks.splice(n,1);
+					for(var n = 0;n < $scope.data.length; n++){
+						if($scope.data[n].id == $scope.selectedGame.id){
+							$scope.data[n].tasks = $scope.selectedGame.tasks;
+						}
+					}
 				}
 			}
 		}
@@ -288,7 +305,7 @@ app.controller('backlogCrtl',function($scope,$http,$timeout,messageService,userS
 		}
 		else{			
 			$scope.selectedGame.tasks.push({"id":0,"idGame":userService.id,"name":task,"complete":0});
-			$scope.task = "";
+			$scope.newTask = "";
 		}
 	}
 	$scope.selectGame = function(game){

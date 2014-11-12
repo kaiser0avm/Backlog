@@ -95,7 +95,7 @@
 				      		</table>
 				      	</div>
 				      	<div class="form-group">
-				      		<label>Quest List:</label>
+				      		<label>Quest List:</label><input type="button" class="btn btn-primary" ng-click="deleteAllTasks(selectedGame.id)" value="DelAll"/>
 				      		<div style="height:200px;overflow:auto">
 			      				<table align="center">
 			      					<tr ng-repeat="data in selectedGame.tasks">
